@@ -45,6 +45,8 @@ class DragonBallApp {
         }
       } else if (route.pageType === 'character-detail') {
         uiManager.renderPage(state)
+      } else if (route.pageType === 'planet-detail') {
+        uiManager.renderPage(state)
       }
     })
   }
@@ -57,6 +59,10 @@ class DragonBallApp {
 
     ;(window as any).navigateToCharacterDetail = (characterId: number) => {
       router.navigateToCharacterDetail(characterId)
+    }
+
+    ;(window as any).navigateToPlanetDetail = (planetId: number) => {
+      router.navigateToPlanetDetail(planetId)
     }
 
     // Setup event handlers

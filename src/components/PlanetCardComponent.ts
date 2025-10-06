@@ -16,7 +16,7 @@ export class PlanetCardComponent extends Component {
 
   render(): string {
     return `
-      <div class="planet-card">
+      <div class="planet-card" data-planet-id="${this.planet.id}">
         <div class="planet-image-container">
           <img src="${this.planet.image}" alt="${this.planet.name}" class="planet-image" />
         </div>

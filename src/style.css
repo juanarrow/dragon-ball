@@ -873,6 +873,162 @@ body::before {
   }
 }
 
+/* Página de detalle del planeta */
+
+.planet-detail-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.planet-detail-header {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.planet-detail-title {
+  font-size: 3rem;
+  font-weight: 900;
+  font-family: 'Orbitron', monospace;
+  background: linear-gradient(45deg, var(--energy-ki), var(--energy-aura), var(--dragon-blue));
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 30px rgba(16, 185, 129, 0.5);
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.planet-detail-content {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+.planet-detail-image-section {
+  position: sticky;
+  top: 2rem;
+}
+
+.planet-detail-image {
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+  border-radius: 2rem;
+  box-shadow: 
+    0 25px 50px -5px rgba(16, 185, 129, 0.6), 
+    0 25px 25px -5px rgba(16, 185, 129, 0.3);
+  filter: brightness(0.95) contrast(1.1);
+  transition: all 0.5s ease;
+}
+
+.planet-detail-image:hover {
+  transform: scale(1.02);
+  filter: 
+    brightness(1.1) 
+    contrast(1.2) 
+    drop-shadow(0 0 30px rgba(16, 185, 129, 0.8))
+    drop-shadow(0 0 60px rgba(16, 185, 129, 0.4));
+}
+
+.planet-detail-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.planet-detail-section {
+  background: linear-gradient(145deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.95) 100%);
+  border: 2px solid rgba(16, 185, 129, 0.4);
+  border-radius: 1.5rem;
+  padding: 2rem;
+  backdrop-filter: blur(12px);
+  box-shadow: 
+    0 15px 35px -5px rgba(16, 185, 129, 0.4), 
+    0 15px 15px -5px rgba(16, 185, 129, 0.2);
+}
+
+.planet-detail-section .section-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--energy-ki);
+  font-family: 'Orbitron', monospace;
+  text-shadow: 0 0 15px rgba(16, 185, 129, 0.6);
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.05em;
+}
+
+.planet-detail-section .info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.planet-detail-section .info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.planet-detail-section .info-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--energy-ki);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.planet-detail-section .info-value {
+  font-size: 1.1rem;
+  color: var(--dragon-light);
+  font-family: 'Inter', sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.planet-detail-section .status-icon {
+  font-size: 1.5rem;
+  filter: drop-shadow(0 0 8px currentColor);
+  transition: all 0.3s ease;
+}
+
+.planet-detail-section .status-icon.destroyed {
+  color: var(--dragon-red);
+  animation: destruction-pulse 2s ease-in-out infinite;
+}
+
+.planet-detail-section .status-icon.intact {
+  color: var(--energy-ki);
+  animation: planet-glow 3s ease-in-out infinite;
+}
+
+/* Responsive para página de detalle de planetas */
+
+@media (max-width: 768px) {
+  .planet-detail-content {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .planet-detail-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .planet-detail-title {
+    font-size: 2rem;
+  }
+  
+  .planet-detail-section .info-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Indicador de carga */
 .loading-indicator {
   display: flex;
