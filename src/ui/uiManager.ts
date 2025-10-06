@@ -1,6 +1,7 @@
 import type { ApiError } from '../types/dragonball'
 import type { AppState } from '../state/stateManager'
 import { router } from '../router/router'
+import { characterService } from '../services/characterService'
 import {
   NavigationMenuComponent,
   HeaderComponent,
@@ -79,6 +80,7 @@ export class UIManager {
   private renderCharactersPage(state: AppState): void {
     const container = this.app.querySelector('.container')!
     
+    // Actualizar estado de componentes
     this.searchContainerComponent.updateState(state)
     this.charactersGridComponent.updateCharacters(state.characters)
     this.loadingIndicatorComponent.setLoading(state.isLoading)
@@ -190,6 +192,9 @@ export class UIManager {
     // Event delegation para tarjetas de personajes y planetas
     this.setupCharacterCardClickHandlers()
     this.setupPlanetCardClickHandlers()
+    
+    // Configurar event listeners para búsqueda y filtros
+    this.setupSearchEventListeners()
   }
 
   private setupCharacterCardClickHandlers(): void {
@@ -240,39 +245,42 @@ export class UIManager {
     this.planetCardClickHandlerAdded = true
   }
 
-  // Métodos para configurar event listeners desde el exterior
-  onSearchInput(callback: (query: string) => void): void {
+  private setupSearchEventListeners(): void {
+    // Configurar búsqueda
     const searchInput = document.getElementById('search-input') as HTMLInputElement
     if (searchInput) {
       searchInput.addEventListener('input', (e) => {
-        callback((e.target as HTMLInputElement).value)
+        const query = (e.target as HTMLInputElement).value
+        characterService.debounceSearch(query)
       })
     }
-  }
 
-  onFilterChange(callback: (gender: string, race: string) => void): void {
+    // Configurar filtros
     const genderFilter = document.getElementById('gender-filter') as HTMLSelectElement
     const raceFilter = document.getElementById('race-filter') as HTMLSelectElement
     
     if (genderFilter) {
       genderFilter.addEventListener('change', () => {
+        const gender = genderFilter.value
         const race = raceFilter?.value || ''
-        callback(genderFilter.value, race)
+        characterService.handleFilterChange(gender, race)
       })
     }
     
     if (raceFilter) {
       raceFilter.addEventListener('change', () => {
+        const race = raceFilter.value
         const gender = genderFilter?.value || ''
-        callback(gender, raceFilter.value)
+        characterService.handleFilterChange(gender, race)
       })
     }
-  }
 
-  onClearSearch(callback: () => void): void {
+    // Configurar botón limpiar
     const clearButton = document.getElementById('clear-button') as HTMLButtonElement
     if (clearButton) {
-      clearButton.addEventListener('click', callback)
+      clearButton.addEventListener('click', () => {
+        characterService.clearSearch()
+      })
     }
   }
 

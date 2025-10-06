@@ -66,9 +66,6 @@ class DragonBallApp {
     }
 
     // Setup event handlers
-    uiManager.onSearchInput((query: string) => characterService.debounceSearch(query))
-    uiManager.onFilterChange((gender: string, race: string) => characterService.handleFilterChange(gender, race))
-    uiManager.onClearSearch(() => characterService.clearSearch())
     uiManager.onRetry(() => {
       const currentRoute = router.getCurrentRoute()
       if (currentRoute.pageType === 'characters') {

@@ -15,6 +15,27 @@ export class SearchContainerComponent extends Component {
     this.update()
   }
 
+  setSearching(isSearching: boolean): void {
+    const indicator = document.getElementById('search-indicator')
+    if (indicator) {
+      if (isSearching) {
+        indicator.classList.remove('hidden')
+      } else {
+        indicator.classList.add('hidden')
+      }
+    }
+  }
+
+  reset(): void {
+    this.state = {
+      ...this.state,
+      searchQuery: '',
+      selectedGender: '',
+      selectedRace: ''
+    }
+    this.update()
+  }
+
   render(): string {
     return `
       <div class="search-container">
