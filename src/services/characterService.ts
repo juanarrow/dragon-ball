@@ -13,7 +13,7 @@ export class CharacterService {
     if (state.isLoading) return
     
     stateManager.setLoading(true)
-    uiManager.updateLoadingIndicator(true, state.currentPage, state.totalPages)
+    uiManager.updateLoadingIndicator(true, state.currentPage, state.totalPages, state.characters.length > 0)
     
     try {
       const response = await this.fetchCharacters(page, state)
@@ -22,8 +22,6 @@ export class CharacterService {
       stateManager.setCharacters(characters, append)
       stateManager.setPagination(currentPage, totalPages)
       stateManager.setError(null)
-      
-      uiManager.renderCharacters(stateManager.getState())
       
       if (currentPage < totalPages) {
         this.setupInfiniteScroll()
@@ -37,11 +35,11 @@ export class CharacterService {
       if (!append) {
         uiManager.renderError(apiError)
       } else {
-        uiManager.updateLoadingIndicator(false, state.currentPage, state.totalPages)
+        uiManager.updateLoadingIndicator(false, state.currentPage, state.totalPages, state.characters.length > 0)
       }
     } finally {
       stateManager.setLoading(false)
-      uiManager.updateLoadingIndicator(false, state.currentPage, state.totalPages)
+      uiManager.updateLoadingIndicator(false, stateManager.getState().currentPage, stateManager.getState().totalPages, stateManager.getState().characters.length > 0)
     }
   }
 

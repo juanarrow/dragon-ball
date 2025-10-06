@@ -2,6 +2,8 @@ import './style.css'
 import { stateManager } from './state/stateManager'
 import { uiManager } from './ui/uiManager'
 import { characterService } from './services/characterService'
+import { planetService } from './services/planetService'
+import { router } from './router/router'
 
 class DragonBallApp {
   constructor() {
@@ -10,14 +12,57 @@ class DragonBallApp {
 
   private initializeApp(): void {
     this.setupStateSubscription()
+    this.setupRouteSubscription()
+    this.setupNavigation()
     this.loadInitialData()
   }
 
   private setupStateSubscription(): void {
     stateManager.subscribe((state) => {
-      // Actualizar UI cuando el estado cambie
-      if (!state.hasError) {
-        uiManager.renderCharacters(state)
+      if (state.hasError) {
+        uiManager.renderError({ message: state.errorMessage, status: 500 })
+      } else {
+        uiManager.renderPage(state)
+      }
+    })
+  }
+
+  private setupRouteSubscription(): void {
+    router.subscribe((route) => {
+      const state = stateManager.getState()
+      
+      if (route.pageType === 'characters') {
+        if (state.characters.length === 0) {
+          characterService.loadCharacters(1, false)
+        } else {
+          uiManager.renderPage(state)
+        }
+      } else if (route.pageType === 'planets') {
+        if (state.planets.length === 0) {
+          planetService.loadPlanets(1, false)
+        } else {
+          uiManager.renderPage(state)
+        }
+      }
+    })
+  }
+
+  private setupNavigation(): void {
+    // Setup navigation
+    ;(window as any).navigateTo = (path: string) => {
+      router.navigateTo(path)
+    }
+
+    // Setup event handlers
+    uiManager.onSearchInput((query: string) => characterService.debounceSearch(query))
+    uiManager.onFilterChange((gender: string, race: string) => characterService.handleFilterChange(gender, race))
+    uiManager.onClearSearch(() => characterService.clearSearch())
+    uiManager.onRetry(() => {
+      const currentRoute = router.getCurrentRoute()
+      if (currentRoute.pageType === 'characters') {
+        characterService.loadCharacters(1, false)
+      } else if (currentRoute.pageType === 'planets') {
+        planetService.loadPlanets(1, false)
       }
     })
   }

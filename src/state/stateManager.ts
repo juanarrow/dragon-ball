@@ -1,7 +1,8 @@
-import type { Character, ApiError } from '../types/dragonball'
+import type { Character, Planet, ApiError } from '../types/dragonball'
 
 export interface AppState {
   characters: Character[]
+  planets: Planet[]
   currentPage: number
   totalPages: number
   isLoading: boolean
@@ -20,6 +21,7 @@ export class StateManager {
   constructor() {
     this.state = {
       characters: [],
+      planets: [],
       currentPage: 1,
       totalPages: 1,
       isLoading: false,
@@ -71,6 +73,13 @@ export class StateManager {
     this.setState({ characters: newCharacters })
   }
 
+  setPlanets(planets: Planet[], append: boolean = false): void {
+    const newPlanets = append 
+      ? [...this.state.planets, ...planets]
+      : planets
+    this.setState({ planets: newPlanets })
+  }
+
   setPagination(currentPage: number, totalPages: number): void {
     this.setState({ currentPage, totalPages })
   }
@@ -91,8 +100,26 @@ export class StateManager {
       selectedRace: '',
       isSearching: false,
       currentPage: 1,
-      characters: []
+      characters: [],
+      planets: []
     })
+  }
+
+  resetState(): void {
+    this.state = {
+      characters: [],
+      planets: [],
+      currentPage: 1,
+      totalPages: 1,
+      isLoading: false,
+      hasError: false,
+      errorMessage: '',
+      searchQuery: '',
+      isSearching: false,
+      selectedGender: '',
+      selectedRace: ''
+    }
+    this.notifyListeners()
   }
 
   hasActiveFilters(): boolean {
