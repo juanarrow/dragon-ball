@@ -19,7 +19,7 @@ export class CharacterCardComponent extends Component {
     const genderIcon = this.getGenderIcon(this.character.gender)
     
     return `
-      <div class="character-card">
+      <div class="character-card" data-character-id="${this.character.id}">
         <img src="${this.character.image}" alt="${this.character.name}" class="character-image" />
         <div class="character-info">
           <h3 class="character-name">${this.character.name}</h3>

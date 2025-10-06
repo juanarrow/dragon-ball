@@ -1,9 +1,10 @@
-export type PageType = 'characters' | 'planets'
+export type PageType = 'characters' | 'planets' | 'character-detail'
 
 export interface Route {
   path: string
   name: string
   pageType: PageType
+  characterId?: number
 }
 
 export const ROUTES: Route[] = [
@@ -25,6 +26,16 @@ export class Router {
       this.currentRoute = route
       this.notifyListeners()
     }
+  }
+
+  navigateToCharacterDetail(characterId: number): void {
+    this.currentRoute = {
+      path: `/character/${characterId}`,
+      name: 'Detalle del Personaje',
+      pageType: 'character-detail',
+      characterId
+    }
+    this.notifyListeners()
   }
 
   subscribe(listener: (route: Route) => void): () => void {

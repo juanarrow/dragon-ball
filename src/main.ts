@@ -43,6 +43,8 @@ class DragonBallApp {
         } else {
           uiManager.renderPage(state)
         }
+      } else if (route.pageType === 'character-detail') {
+        uiManager.renderPage(state)
       }
     })
   }
@@ -51,6 +53,10 @@ class DragonBallApp {
     // Setup navigation
     ;(window as any).navigateTo = (path: string) => {
       router.navigateTo(path)
+    }
+
+    ;(window as any).navigateToCharacterDetail = (characterId: number) => {
+      router.navigateToCharacterDetail(characterId)
     }
 
     // Setup event handlers

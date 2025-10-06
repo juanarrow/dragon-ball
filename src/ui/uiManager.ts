@@ -7,6 +7,7 @@ import {
   SearchContainerComponent,
   CharactersGridComponent,
   PlanetsGridComponent,
+  CharacterDetailComponent,
   LoadingIndicatorComponent,
   EndMessageComponent,
   ErrorContainerComponent
@@ -19,8 +20,10 @@ export class UIManager {
   private searchContainerComponent: SearchContainerComponent
   private charactersGridComponent: CharactersGridComponent
   private planetsGridComponent: PlanetsGridComponent
+  private characterDetailComponent: CharacterDetailComponent | null = null
   private loadingIndicatorComponent: LoadingIndicatorComponent
   private endMessageComponent: EndMessageComponent
+  private characterCardClickHandlerAdded: boolean = false
 
   constructor() {
     this.app = document.querySelector<HTMLDivElement>('#app')!
@@ -61,6 +64,8 @@ export class UIManager {
       this.renderCharactersPage(state)
     } else if (currentRoute.pageType === 'planets') {
       this.renderPlanetsPage(state)
+    } else if (currentRoute.pageType === 'character-detail') {
+      this.renderCharacterDetailPage(state, currentRoute.characterId!)
     }
     
     this.setupEventListeners()
@@ -102,6 +107,24 @@ export class UIManager {
     `
   }
 
+  private renderCharacterDetailPage(state: AppState, characterId: number): void {
+    const character = state.characters.find(c => c.id === characterId)
+    if (!character) {
+      this.renderError({ message: 'Personaje no encontrado', status: 404 })
+      return
+    }
+
+    this.characterDetailComponent = new CharacterDetailComponent(character)
+    const container = this.app.querySelector('.container')!
+    
+    container.innerHTML = `
+      ${this.navigationMenuComponent.render()}
+      ${this.characterDetailComponent.render()}
+    `
+    
+    this.setupBackButton()
+  }
+
   renderError(error: ApiError): void {
     const errorComponent = new ErrorContainerComponent(error)
     this.app.innerHTML = errorComponent.render()
@@ -141,8 +164,32 @@ export class UIManager {
   }
 
   private setupEventListeners(): void {
-    // Los event listeners se configurarán desde el módulo principal
-    // para mantener la separación de responsabilidades
+    // Event delegation para tarjetas de personajes
+    this.setupCharacterCardClickHandlers()
+  }
+
+  private setupCharacterCardClickHandlers(): void {
+    // Evitar agregar múltiples event listeners
+    if (this.characterCardClickHandlerAdded) {
+      return
+    }
+    
+    // Usar event delegation para manejar clicks en cualquier parte de la tarjeta
+    document.addEventListener('click', (event) => {
+      const target = event.target as HTMLElement
+      const characterCard = target.closest('.character-card')
+      
+      if (characterCard) {
+        const characterId = characterCard.getAttribute('data-character-id')
+        if (characterId) {
+          event.preventDefault()
+          event.stopPropagation()
+          router.navigateToCharacterDetail(parseInt(characterId))
+        }
+      }
+    })
+    
+    this.characterCardClickHandlerAdded = true
   }
 
   // Métodos para configurar event listeners desde el exterior
@@ -185,6 +232,15 @@ export class UIManager {
     const retryButton = document.querySelector('.retry-button') as HTMLButtonElement
     if (retryButton) {
       retryButton.addEventListener('click', callback)
+    }
+  }
+
+  private setupBackButton(): void {
+    const backButton = document.getElementById('back-button') as HTMLButtonElement
+    if (backButton) {
+      backButton.addEventListener('click', () => {
+        router.navigateTo('/')
+      })
     }
   }
 }
